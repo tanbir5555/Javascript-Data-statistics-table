@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statistics</title>
+    <link rel="stylesheet" href="dist/css/style.css">
+</head>
+
+<body>
+    <h1 class="header">Statistics</h1>
+    <div class="container">
+        <div class="input_zone">
+            <input class="input" type="text" name="" id="unorganize_data" value="1,12,13,5,6,12,15,11,6,7,2,9,10,12,3" placeholder="12,35,55,64,68,6854">
+
+            <button class="btn btn-process" id="btn_process">Process Now</button>
+            <button style="background-color:red" class="btn btn-process" id="btn_reset">RESET</button>
+            <table>
+                <tbody>
+                    <tr>
+                        <th>Minimum Value</th>
+                        <th>Maximum Value</th>
+                        <th>Total Frequency</th>
+
+                    </tr>
+                    <tr>
+                        <td><span id="minvalue">0</span></td>
+                        <td><span id="maxvalue">0</span></td>
+                        <td><span id="fre">0</span></td>
+                    </tr>
+                </tbody>
+            </table>
+
+
+            <div id="hidden">
+                <input value="0" id="InputminValue" class="input" width="100px" type="" name="" placeholder="please input where do you like to start form, 0 or 1 or 5 like this numbers">
+
+
+
+                <input value="15" id="InputmaxValue" class="input" width="100px" type="" name="" placeholder="input the end class number like 70,80,90">
+                <input value="5" id="classGap" class="input" width="100px" type="" name="" placeholder="input the Gap of each class, like 5, 10, 20">
+
+
+                <button class="btn" id="btn_one">Make</button>
+            </div>
+        </div>
+        <div style="margin-top:20px"></div>
+
+
+        <div id="table_area">
+
+        </div>
+
+    </div>
+
+
+
+
+
+    <script src="dist/js/js.js"></script>
+    <script src="dist/js/main.js"></script>
+</body>
+
+</html>
