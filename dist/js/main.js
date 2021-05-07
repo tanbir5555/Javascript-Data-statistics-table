@@ -7,6 +7,7 @@ let reset_btn = s("#btn_reset");
 let min = s("#minvalue")
 let max = s("#maxvalue")
 let fre = s("#fre")
+let fixiTarget = s("#sumfixi")
 
 let hidden = s("#hidden")
 let inputStart = s("#InputminValue")
@@ -34,16 +35,22 @@ let storage = {
     "main": [],
     "min": 0,
     "max": 0,
-    "classGap": 0,
+    "classGap": 0,//Class range
+    "Class_range": [],
     "start": 0,
     "end": 0,
     "classMin": [],
     "classMax": [],
     "class": [],
     "frequency": [],
-    "spquential_population": [],
+    "less_than_Cumulative_Frequency": [],
+    "greater_than_Cumulative_Frequency": [],
     "midpoint": [],
     "fixi": [],
+    "sumfixi":0,
+    "frequency_Density": [],
+    "Relative_Frequency": [],
+    "Percentage_Frequency": [],
 
 
 }
@@ -62,16 +69,22 @@ function reset() {
         "main": [],
         "min": 0,
         "max": 0,
-        "classGap": 0,
+        "classGap": 0,//Class range,
+        "Class_range":[],
         "start": 0,
         "end": 0,
         "classMin": [],
         "classMax": [],
         "class": [],
         "frequency": [],
-        "spquential_population": [],
+        "less_than_Cumulative_Frequency": [],
+        "greater_than_Cumulative_Frequency": [],
         "midpoint": [],
         "fixi": [],
+        "sumfixi": 0,
+        "frequency_Density":[],
+        "Relative_Frequency":[],
+        "Percentage_Frequency":[],
 
 
     }
@@ -82,7 +95,34 @@ function reset() {
 
 //reset
 
+function classRange(){
+    for(let x=0;x<storage["classMin"].length;x++){
+        let max = parseFloat(storage["classMax"][x])
+        let min = parseFloat(storage["classMin"][x])
+        let ans = max - min
+        storage["Class_range"].push(ans);
+        frequency_Density(ans,x);
+        Relative_Frequency(x);
+       
+    }
+}
+function frequency_Density(range,serial){
+    let frequency = storage["frequency"][serial];
+    let fd = (frequency / range)
+    storage["frequency_Density"].push(fd)
+}
 
+function Relative_Frequency(serial) {
+    let f=storage["frequency"][serial]
+    let rf=f/(storage["main"].length);
+    storage["Relative_Frequency"].push(rf)
+    Percentage_Frequency(rf)
+}
+
+function Percentage_Frequency(answer){
+    let percent = answer*100;
+    storage["Percentage_Frequency"].push(percent)
+}
 function printNow() {
     min.innerHTML = storage["min"];
     max.innerHTML = storage["max"];
@@ -90,6 +130,7 @@ function printNow() {
     input_end.value = storage["max"];
     fre.innerHTML = storage["main"].length
 }
+
 
 function printAll() {
     let table = cr("table");
@@ -99,25 +140,46 @@ function printAll() {
     table.style.margin = "8px"
     let trHeader = cr("tr")
 
-    let th1 = cr("th")
-    th1.innerHTML = "Class"
-    trHeader.appendChild(th1)
+    function th(headerName) {
+        let ths = cr("th")
+        ths.innerHTML = headerName
+        trHeader.appendChild(ths)
+    }
 
-    let th2 = cr("th")
-    th2.innerHTML = "frequency (fi)"
-    trHeader.appendChild(th2)
-
-    let th3 = cr("th")
-    th3.innerHTML = "Spquential Population"
-    trHeader.appendChild(th3)
-
-    let th4 = cr("th")
-    th4.innerHTML = "Class middle"
-    trHeader.appendChild(th4)
-
-    let th5 = cr("th")
-    th5.innerHTML = "fixi"
-    trHeader.appendChild(th5)
+    th("শ্রেণী")
+    // let th1 = cr("th")
+    // th1.innerHTML = "Class"
+    // trHeader.appendChild(th1)
+    th("গনসংখ্যা <br> (fi)")
+    // let th2 = cr("th")
+    // th2.innerHTML = "frequency (fi)"
+    // trHeader.appendChild(th2)
+    th(" উর্ধক্রম<br>ক্রমোযোজিত <br>গনসংখ্যা <br>(L.c.f)")
+    th(" নিম্নক্রম <br>ক্রমোযোজিত <br>গনসংখ্যা <br>(M.c.f)")
+    // let th3 = cr("th")
+    // th3.innerHTML = "Spquential Population"
+    // trHeader.appendChild(th3)
+    th("শ্রেণী <br>মধ্যমান<br>(xi) ")
+    // let th4 = cr("th")
+    // th4.innerHTML = "Class middle"
+    // trHeader.appendChild(th4)
+    th("নিম্ন <br>শ্রেণী <br>সীমা <br>(s/L)")
+    // let thLowercl=cr("th")
+    // thLowercl.innerHTML="Lower Class limit"
+    // trHeader.appendChild(thLowercl)
+    th("উর্ধ <br>শ্রেণী <br>সীমা  <br>(u/h)")
+    // let thUppercl = cr("th")
+    // thUppercl.innerHTML = "Upper Class limit"
+    // trHeader.appendChild(thUppercl)
+    th("fixi")
+    th("শ্রেণী <br>ব্যাপ্তি <br>(c)")
+    th("গনসংখ্যা <br>ঘনত্ব<br>(fi/c) ")
+    th("আপেক্ষিক <br>গনসংখ্যা<br>(fi/N)")
+    th("শতকরা <br>গনসংখ্যা<br>(fi/N)*100%")
+    
+    // let th5 = cr("th")
+    // th5.innerHTML = "fixi"
+    // trHeader.appendChild(th5)
 
     table.appendChild(trHeader)
 
@@ -125,26 +187,45 @@ function printAll() {
     for (let x = 0; x < storage["frequency"].length; x++) {
 
         let row = cr("tr");
-
-        let tdClass = cr("td")
-        tdClass.innerHTML = storage["class"][x]
-        row.appendChild(tdClass)
-
-        let tdFrequency = cr("td");
-        tdFrequency.innerHTML = storage["frequency"][x]
-        row.appendChild(tdFrequency)
-
-        let sp = cr("td");
-        sp.innerHTML = storage["spquential_population"][x]
-        row.appendChild(sp)
-
-        let middle = cr("td");
-        middle.innerHTML = storage["midpoint"][x]
-        row.appendChild(middle)
-
-        let fixis = cr("td");
-        fixis.innerHTML = storage["fixi"][x]
-        row.appendChild(fixis)
+        function td(innerElements) {
+            let tdClass = cr("td")
+            tdClass.innerHTML = innerElements
+            row.appendChild(tdClass)
+        }
+        td(storage["class"][x])
+        // let tdClass = cr("td")
+        // tdClass.innerHTML = storage["class"][x]
+        // row.appendChild(tdClass)
+        td(storage["frequency"][x])
+        // let tdFrequency = cr("td");
+        // tdFrequency.innerHTML = storage["frequency"][x]
+        // row.appendChild(tdFrequency)
+        td(storage["less_than_Cumulative_Frequency"][x])
+        td(storage["greater_than_Cumulative_Frequency"][x])
+        // let sp = cr("td");
+        // sp.innerHTML = storage["less_than_Cumulative_Frequency"][x]
+        // row.appendChild(sp)
+        td(storage["midpoint"][x])
+        // let middle = cr("td");
+        // middle.innerHTML = storage["midpoint"][x]
+        // row.appendChild(middle)
+        td(storage["classMin"][x])
+        // let lowerClass = cr("td");
+        // lowerClass.innerHTML = storage["classMin"][x]
+        // row.appendChild(lowerClass)
+        td(storage["classMax"][x])
+        // let upperClass = cr("td");
+        // upperClass.innerHTML = storage["classMax"][x]
+        // row.appendChild(upperClass)
+        td(storage["fixi"][x])
+        td(storage["Class_range"][x])
+        td(storage["frequency_Density"][x])
+        td(storage["Relative_Frequency"][x])
+        td(storage["Percentage_Frequency"][x]+"%")
+       
+        // let fixis = cr("td");
+        // fixis.innerHTML = storage["fixi"][x]
+        // row.appendChild(fixis)
 
 
         table.append(row)
@@ -189,8 +270,8 @@ function getValue() {
 }
 
 
-function spquential_population() {
-    let sp = storage["spquential_population"]
+function less_than_Cumulative_Frequency() {
+    let sp = storage["less_than_Cumulative_Frequency"]
     let frequency = storage["frequency"]
     for (let x = 0; x < frequency.length; x++) {
         if (x === 0) {
@@ -202,6 +283,25 @@ function spquential_population() {
 
     }
 
+}
+
+function greater_than_Cumulative_Frequency()
+{
+    let sp = storage["greater_than_Cumulative_Frequency"]
+    let frequency = storage["frequency"]
+    for (let x = 0; x < frequency.length; x++)
+    {
+        if (x === 0)
+        {
+            sp.push(frequency[frequency.length-1])
+        } else
+        {
+            let va = frequency[frequency.length-(x+1)] + sp[(x - 1)]
+            sp.push(va)
+        }
+
+    }
+    sp.reverse()
 }
 
 function midpoint(gap) {
@@ -227,8 +327,19 @@ function fixi() {
         let val = mid[x] * frequency[x]
         fi_xi.push(val)
     }
+    sam_of_Fixi()
 }
 
+function sam_of_Fixi() {
+    let fi_xi = storage["fixi"];
+   
+    for (let x = 0; x < fi_xi.length;x++){
+        storage["sumfixi"] = storage["sumfixi"] + fi_xi[x];
+    }
+    let sum = storage["sumfixi"]
+    console.log(sum);
+    fixiTarget.innerHTML = "sum of fixi = " + sum
+}
 function play() {
     hidden.style.display = "none"
     getValue();
@@ -276,9 +387,10 @@ function play() {
         storage["class"].push(pushable_data)
     }
     midpoint(gap)
-    spquential_population()
+    less_than_Cumulative_Frequency()
+    greater_than_Cumulative_Frequency()
     fixi()
-
+    classRange()
     printAll()
     console.log(storage)
 
